@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error <%= status %></title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
+        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background: #f8d7da; color: #721c24; }
+        h1 { font-size: 2em; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Error <%= status %></h1>
+    <p><%= message %></p>
+    <a href="/">Go to Homepage</a>
+</div>
+</body>
+</html>

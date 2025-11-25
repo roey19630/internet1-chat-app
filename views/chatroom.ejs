@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatroom</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+<div class="container mt-4">
+    <!-- שורה עליונה -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <button class="btn btn-danger" onclick="window.location.href='/chatroom/logout'">Log out</button>
+        <button class="btn btn-primary" id="searchToggle">Search</button>
+    </div>
+
+    <!-- שורת ברכת שלום / חיפוש -->
+    <div id="welcomeMessage">
+        <h4>Hello, <%= user.firstName %> <%= user.lastName %></h4>
+    </div>
+    <div id="searchBar" class="d-none">
+        <div class="d-flex align-items-center">
+            <input
+                    type="text"
+                    id="searchInput"
+                    class="form-control me-2"
+                    placeholder="Search messages..."
+            />
+            <button class="btn btn-primary me-2" id="searchButtonInner">🔍</button>
+            <button class="btn btn-secondary me-2" id="nextResult">⬆</button>
+            <button class="btn btn-secondary me-2" id="prevResult">⬇</button>
+            <span id="searchInfo" class="me-2">0 / 0</span>
+            <button class="btn btn-danger" id="cancelSearch">X</button>
+        </div>
+    </div>
+
+    <!-- רשימת הודעות -->
+    <div id="messageContainer" style="position: relative; height: 400px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9;">
+        <% messages.forEach(message => { %>
+            <% const formattedDate = new Date(message.createdAt).toLocaleString('en-GB', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }); %>
+            <!--הודעות של המשתמש הנוכחי-->
+            <% if (message.userId === user.id) { %>
+                <div id="message-<%= message.id %>" style="text-align: right; background-color: #d4f8d4; color: black; padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 70%; margin-left: auto;">
+                    <div class="message-content"><%= message.content %></div>
+                    <div class="message-meta">
+                        <small style="color: gray;"><%= formattedDate %></small>
+                        <% if (message.edited) { %>
+                            <small class="edited-label" style="color: black; font-weight: bold;">edited</small>
+                        <% } %>
+                    </div>
+                    <div>
+                        <span class="edit-button" style="color: blue; cursor: pointer; margin-left: 10px;" data-message-id="<%= message.id %>">edit</span>
+                        <span class="delete-button" style="color: red; cursor: pointer;" data-message-id="<%= message.id %>">delete</span>
+                    </div>
+                </div>
+            <!--הודעות של משתמשים אחרים-->
+            <% } else { %>
+                <div id="message-<%= message.id %>" style="text-align: left; background-color: #f0f0f0; color: black; padding: 10px; border-radius: 10px; margin-bottom: 10px; max-width: 70%; margin-right: auto;">
+                    <div style="font-weight: bold; color: black;">
+                        <%= message.User?.firstName %> <%= message.User?.lastName %>
+                    </div>
+                    <div class="message-content"><%= message.content %></div>
+                    <div class="message-meta">
+                        <small style="color: gray;"><%= formattedDate %></small>
+                        <% if (message.edited) { %>
+                            <small class="edited-label" style="color: black; font-weight: bold;">edited</small>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+        <% }); %>
+
+        <!-- כפתור גלילה לתחתית -->
+            <button id="scrollToBottomButton" style="position: fixed; bottom: 20px; right: 20px; z-index: 100; display: none; background-color: rgba(0, 0, 0, 0.5); color: white; border: none; border-radius: 50%; width: 40px; height: 40px;">
+                ⬇
+            </button>
+
+    </div>
+
+    <!-- שדה להזנת הודעה -->
+    <form action="/chatroom" method="POST" class="d-flex">
+        <input
+                type="text"
+                name="message"
+                class="form-control me-2"
+                placeholder="Write your message here..."
+                required
+        />
+        <button type="submit" class="btn btn-success">Send</button>
+    </form>
+</div>
+<script src="/js/chatroom.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
